@@ -9,6 +9,8 @@ class Board:
             self.state=state
         else:
             self.state = [0 for i in range(16)]
+            self.assign_tile_to_board()
+            self.assign_tile_to_board()
 
     def print_board(self):
         rows = self.rows()
@@ -46,6 +48,25 @@ class Board:
                     col.append(self.state[j])
             cols.append(col)
         return cols
+
+    def generate_new_tile(self):
+        # 90% of new tiles are a 2.  10% are 4.
+        return random.choice([2,2,2,2,2,2,2,2,2,4])
+
+    def get_empty_spaces(self):
+        '''all the spaces that don't have a value of zero.'''
+        empty_spaces = []
+        for idx, val in enumerate(self.state):
+            if val == 0:
+                empty_spaces.append(idx)
+        return empty_spaces
+
+    def assign_tile_to_board(self):
+        #get the indexes of the empty tiles
+        tile = self.generate_new_tile()
+        empty_spaces = self.get_empty_spaces()
+        space = random.choice(empty_spaces)
+        self.state[space] = tile
 
     def update_state_with_rows(self, rows):
         new_state = []
@@ -157,37 +178,25 @@ def down(board):
     flipped_cols = [list(reversed(r)) for r in cols]
     new_cols = move(flipped_cols)
     # flip them back
-    out_cols = [list(reversed(r)) for r in cols]
+    out_cols = [list(reversed(r)) for r in new_cols]
     board.update_state_with_cols(out_cols)
 
-def generate_new_tile():
-    # 90% of new tiles are a 2.  10% are 4.
-    return random.choice([2,2,2,2,2,2,2,2,2,4])
+def is_game_over():
+    empty_spaces = board.get_empty_spaces()
+        if len(empty_spaces) == 0:
+            True
+        else:
+            False
 
-def get_empty_spaces(board):
-    '''all the spaces that don't have a value of zero.'''
-    empty_spaces = []
-    for idx, val in enumerate(board.state):
-        if val == 0:
-            empty_spaces.append(idx)
-    return empty_spaces
 
-def assign_tile_to_board(tile, board):
-    #get the indexes of the empty tiles
-    empty_spaces = get_empty_spaces(board)
-    space = random.choice(empty_spaces)
-    board.state[space] = tile
 
 
 
 def main():
     board = Board()
-
     game_over = False
     while game_over == False:
         # update board with new tile
-        tile = generate_new_tile()
-        assign_tile_to_board(tile, board)
 
         board.print_board()
 
@@ -207,10 +216,10 @@ def main():
                 game_over = True
 
         #check if the board is full (game ends)
-        empty_spaces = get_empty_spaces(board)
-        if len(empty_spaces) == 0:
-            game_over = True
+        game_over = is_game_over()
+        if not game_over():
+            board.assign_tile_to_board()
 
-if __name__ == "__main__":up
+if __name__ == "__main__":
     main()
 

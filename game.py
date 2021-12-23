@@ -9,6 +9,7 @@ class Board:
             self.state=state
         else:
             self.state = [0 for i in range(16)]
+            #the game starts with 2 tiles on the board
             self.assign_tile_to_board()
             self.assign_tile_to_board()
 
@@ -138,7 +139,7 @@ def move(board):
     '''this is a general move function that 
     is the foundation for all four move functions. 
     It assumes the data is organized from left to right
-    so you have to structure the data before calling.'''
+    so you have to restructure the data before calling.'''
     new_board = []
     for b in board:
         b1 = slide_tiles(b)
@@ -181,23 +182,20 @@ def down(board):
     out_cols = [list(reversed(r)) for r in new_cols]
     board.update_state_with_cols(out_cols)
 
-def is_game_over():
-    empty_spaces = board.get_empty_spaces()
-        if len(empty_spaces) == 0:
-            True
-        else:
-            False
-
-
-
+def game_state(board):
+    state = 'PLAYING'
+    if 2048 in board.state:
+        state =  'WON'
+    elif not board.get_empty_spaces():
+        state = 'LOST'
+    
+    return state
 
 
 def main():
     board = Board()
     game_over = False
     while game_over == False:
-        # update board with new tile
-
         board.print_board()
 
         #get the mover from the user
@@ -215,10 +213,17 @@ def main():
                 print('Bye.')
                 game_over = True
 
-        #check if the board is full (game ends)
-        game_over = is_game_over()
-        if not game_over():
-            board.assign_tile_to_board()
+        # check the game state
+        game = game_state(board)
+        if game == 'WON':
+            game_over = True
+            print('You won :-)')
+        elif game == 'LOST':
+            game_over = True
+            print('You lost :-(')
+        else:
+            board.assign_tile_to_board()            
+
 
 if __name__ == "__main__":
     main()

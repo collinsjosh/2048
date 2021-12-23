@@ -180,7 +180,7 @@ def assign_tile_to_board(tile, board):
 
 
 
-def __main__():
+def main():
     board = Board()
 
     game_over = False
@@ -211,5 +211,6 @@ def __main__():
         if len(empty_spaces) == 0:
             game_over = True
 
-        
+if __name__ == "__main__":up
+    main()
 
